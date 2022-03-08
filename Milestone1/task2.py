@@ -1,6 +1,9 @@
 import yaml
-import logging
+from yaml.loader import SafeLoader
 
+from datetime import datetime
+import time
+import threading
 
 
 
@@ -8,14 +11,56 @@ with open('Milestone1B.yaml') as fh:
 
     read_data = yaml.load(fh, Loader=yaml.FullLoader)
 
+temp=open("logfile2.txt","w")
+threads=[]
 
-Log_Format = "%(levelname)s %(asctime)s - %(message)s"
+def flow(work, execution, activities):
+    if execution == "Sequential":
+        for act in activities:
+            now=datetime.now()
+            temp.write(f"{now};{work}.{act} Entry\n")
+            if activities[act]['Type']=="Flow":
+                newwork=work + '.' + act
+                flow(newwork,activities[act]['Execution'], activities[act]['Activities'])
+            elif activities[act]['Type']=="Task":
+                newwork=work+'.'+act
+                task(newwork,activities[act]['Function'], activities[act]['Inputs'])
+            now=datetime.now()
+            temp.write(f"{now};{work}.{act} Exit \n")
+    if execution == "Concurrent":
+        for act in activities:
+            now=datetime.now()
+            temp.write(f"{now};{work}.{act} Entry\n")
+            if activities[act]['Type']=="Flow":
+                newwork=work+'.'+act
+                thread=threading.Thread(target=flow,args=[newwork,activities[act]['Execution'], activities[act]['Activities']])
+                thread.start()
+                threads.append({thread,newwork})
+            elif activities[act]['Type']=="Task":
+                newwork=work+'.'+act
+                thread=threading.Thread(target=task,args=[newwork,activities[act]['Function'], activities[act]['Inputs']])
+                thread.start()
+                threads.append({thread,newwork})    
+            now=datetime.now()
+            for thread in threads:
+                thread.join()
+                
+            temp.write(f"{now};{work}.{act} Exit \n")
 
-logging.basicConfig(filename = "logfile2.log",
-                    filemode = "w",
-                    format = Log_Format,
-                    level = logging.ERROR)
+def task(work,function,inputs):
+    if function =='TimeFunction':
+        fun_input=inputs['FunctionInput']
+        exc_time=inputs['ExecutionTime']
+        now= datetime.now()
+        temp.write(f"{now};{work} Executing{function} ({fun_input},{exc_time})\n")
+        time.sleep(int(exc_time))
 
-logger = logging.getLogger()
-
-logger.error("my workflow entry")
+for work in read_data:
+    now=datetime.now()
+    temp.write(f"{now};{work} Entry\n")
+    if read_data[work]['Type']=="Flow":
+        flow(work,read_data[work]['Execution'],read_data[work]['Activities'])
+    elif read_data[work]['Type']=="Task":
+        task(work,read_data[work]['Function'],read_data[work]['Inputs'])
+    now=datetime.now()
+    temp.write(f"{now};{work} Exit")

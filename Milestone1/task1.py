@@ -1,11 +1,6 @@
 import yaml
 import logging
 
-#Creating and Configuring Logger
-
-
-#Testing our Logger
-
 
 with open('Milestone1A.yaml') as fh:
 
@@ -16,10 +11,9 @@ Log_Format = "%(levelname)s %(asctime)s - %(message)s"
 
 logging.basicConfig(filename = "logfile1.log",
                     filemode = "w",
-                    format = Log_Format,
-                    level = logging.ERROR)
+                    format = Log_Format
+                    )
 
-logger = logging.getLogger()
-
-logger.error("my workflow entry")
+logger = logging.getLogger('TaskA')
+logger.error("Mywork entry")
 
