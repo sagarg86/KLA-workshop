@@ -30,7 +30,7 @@ def task(work,function,inputs):
         fun_input=inputs['FunctionInput']
         exc_time=inputs['ExecutionTime']
         now= datetime.now()
-        temp.write(f"{now};{work} Executing{function} ({fun_input},{exc_time})\n")
+        temp.write(f"{now};{work} Executing {function} ({fun_input},{exc_time})\n")
         time.sleep(int(exc_time))
 
 for work in read_data:
