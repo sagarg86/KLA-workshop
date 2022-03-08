@@ -23,7 +23,7 @@ def flow(work, execution, activities):
                 newwork=work + '.' + act
                 flow(newwork,activities[act]['Execution'], activities[act]['Activities'])
             elif activities[act]['Type']=="Task":
-                newwork=work+'.'+act
+                newwork=work + '.' + act
                 task(newwork,activities[act]['Function'], activities[act]['Inputs'])
             now=datetime.now()
             temp.write(f"{now};{work}.{act} Exit \n")
@@ -44,7 +44,6 @@ def flow(work, execution, activities):
             now=datetime.now()
             for thread in threads:
                 thread.join()
-                
             temp.write(f"{now};{work}.{act} Exit \n")
 
 def task(work,function,inputs):
