@@ -1,0 +1,21 @@
+import yaml
+import logging
+
+
+
+
+with open('Milestone1B.yaml') as fh:
+
+    read_data = yaml.load(fh, Loader=yaml.FullLoader)
+
+
+Log_Format = "%(levelname)s %(asctime)s - %(message)s"
+
+logging.basicConfig(filename = "logfile2.log",
+                    filemode = "w",
+                    format = Log_Format,
+                    level = logging.ERROR)
+
+logger = logging.getLogger()
+
+logger.error("my workflow entry")
